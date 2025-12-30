@@ -58,7 +58,7 @@ func (h handler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	var req handlerModel.TaskRequest
+	req := handlerModel.TaskRequest{}
 	if err = json.NewDecoder(r.Body).Decode(&req); err != nil {
 		err = handlerModel.ErrInvalidJSON
 		return
