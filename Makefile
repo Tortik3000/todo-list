@@ -3,7 +3,7 @@ GOLANGCI_BIN := $(LOCAL_BIN)/golangci-lint
 GOFUMPT_BIN := $(LOCAL_BIN)/gofumpt
 SWAG_BIN := $(LOCAL_BIN)/swag
 GO_TEST=$(LOCAL_BIN)/gotest
-GO_TEST_ARGS=-race -v ./...
+GO_TEST_ARGS=-race -cover -v ./...
 
 all: generate lint test
 

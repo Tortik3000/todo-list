@@ -198,6 +198,7 @@ func (h handler) DeleteTask(w http.ResponseWriter, r *http.Request) {
 	id, err := httpUtils.ParseID(r)
 	if err != nil {
 		err = handlerModel.ErrInvalidID
+		return
 	}
 
 	err = h.taskService.DeleteTask(r.Context(), id)

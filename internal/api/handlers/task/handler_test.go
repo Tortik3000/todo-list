@@ -19,9 +19,11 @@ func TestHandler_CreateTask(t *testing.T) {
 	t.Parallel()
 
 	testsCases := []struct {
-		name  string
-		task0 handlerModel.TaskRequest
-		task1 handlerModel.TaskRequest
+		name            string
+		task0           handlerModel.TaskRequest
+		task1           handlerModel.TaskRequest
+		status          int
+		invalidJSONBody []byte
 	}{
 		{
 			name: "success create task",
@@ -34,6 +36,17 @@ func TestHandler_CreateTask(t *testing.T) {
 				Header:    "header_1",
 				Completed: true,
 			},
+			status: http.StatusCreated,
+		},
+		{
+			name:            "invalid json type",
+			status:          http.StatusBadRequest,
+			invalidJSONBody: []byte(`{"header":"header","description":desc}`),
+		},
+		{
+			name:            "invalid json name",
+			status:          http.StatusBadRequest,
+			invalidJSONBody: []byte(`{"head":"header","description":"desc"}`),
 		},
 	}
 
@@ -43,7 +56,25 @@ func TestHandler_CreateTask(t *testing.T) {
 
 			h := newTestHandler()
 
-			created0 := createTaskDirect(t, h, tt.task0)
+			body, err := json.Marshal(tt.task0)
+			tests.RequireNoError(t, err)
+
+			if tt.invalidJSONBody != nil {
+				body = tt.invalidJSONBody
+			}
+
+			req := httptest.NewRequest(http.MethodPost, "/todos", bytes.NewReader(body))
+			rr := httptest.NewRecorder()
+
+			h.CreateTask(rr, req)
+			tests.RequireEqual(t, tt.status, rr.Code)
+			if tt.invalidJSONBody != nil {
+				return
+			}
+
+			created0 := handlerModel.TaskResponse{}
+			tests.RequireNoError(t, json.NewDecoder(rr.Body).Decode(&created0))
+
 			tests.AssertEqual(t, int64(0), created0.ID)
 			tests.AssertEqual(t, tt.task0.Header, created0.Header)
 			tests.AssertEqual(t, tt.task0.Description, created0.Description)
@@ -75,6 +106,11 @@ func TestHandler_GetTaskByID(t *testing.T) {
 			name:   "fail get not found",
 			taskID: "1",
 			status: http.StatusNotFound,
+		},
+		{
+			name:   "invalid id",
+			taskID: "one",
+			status: http.StatusBadRequest,
 		},
 	}
 
@@ -160,9 +196,10 @@ func TestHandler_UpdateTask(t *testing.T) {
 	t.Parallel()
 
 	testsCases := []struct {
-		name   string
-		taskID string
-		status int
+		name            string
+		taskID          string
+		status          int
+		invalidJSONBody []byte
 	}{
 		{
 			name:   "success update task",
@@ -173,6 +210,23 @@ func TestHandler_UpdateTask(t *testing.T) {
 			name:   "not found task for update",
 			taskID: "1",
 			status: http.StatusNotFound,
+		},
+		{
+			name:   "invalid id for update",
+			taskID: "один",
+			status: http.StatusBadRequest,
+		},
+		{
+			name:            "invalid json type",
+			taskID:          "0",
+			status:          http.StatusBadRequest,
+			invalidJSONBody: []byte(`{"header":"header","description":desc}`),
+		},
+		{
+			name:            "invalid json name",
+			taskID:          "0",
+			status:          http.StatusBadRequest,
+			invalidJSONBody: []byte(`{"head":"header","description":"desc"}`),
 		},
 	}
 
@@ -194,6 +248,10 @@ func TestHandler_UpdateTask(t *testing.T) {
 			}
 			body, err := json.Marshal(updateReq)
 			tests.RequireNoError(t, err)
+
+			if tt.invalidJSONBody != nil {
+				body = tt.invalidJSONBody
+			}
 
 			req := httptest.NewRequest(http.MethodPut, "/todos/"+tt.taskID, bytes.NewReader(body))
 			req.Header.Set("Content-Type", "application/json")
@@ -242,6 +300,11 @@ func TestHandler_DeleteTask(t *testing.T) {
 			name:   "not found task for delete",
 			taskID: "1",
 			status: http.StatusNotFound,
+		},
+		{
+			name:   "invalid id for delete",
+			taskID: "один",
+			status: http.StatusBadRequest,
 		},
 	}
 
