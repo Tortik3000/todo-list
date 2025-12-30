@@ -10,7 +10,6 @@ import (
 )
 
 func TestNew(t *testing.T) {
-
 	tests := []struct {
 		name     string
 		envValue string
@@ -44,7 +43,7 @@ func TestNew(t *testing.T) {
 			} else {
 				os.Unsetenv("PORT")
 			}
-			
+
 			cfg := config.New()
 
 			assert.Equal(t, tt.wantPort, cfg.Server.Port)

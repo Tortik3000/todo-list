@@ -52,7 +52,6 @@ func TestRepository_CreateTask(t *testing.T) {
 			res, err = repository.CreateTask(t.Context(), tt.task1)
 			require.NoError(t, err)
 			taskEqual(t, tt.task1, *res)
-
 		})
 	}
 }
@@ -210,8 +209,8 @@ func TestRepository_DeleteTask(t *testing.T) {
 			}
 			require.NoError(t, err)
 
-			_, err = repository.GetTaskByID(t.Context(), (tt.taskID))
-			require.Error(t, modelErr.ErrTaskNotFound)
+			_, err = repository.GetTaskByID(t.Context(), tt.taskID)
+			require.ErrorIs(t, err, modelErr.ErrTaskNotFound)
 		})
 	}
 }
