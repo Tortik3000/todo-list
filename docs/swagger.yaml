@@ -1,0 +1,155 @@
+basePath: /
+definitions:
+  github_com_Tortik3000_todo-list_internal_api_handlers_task_model.TaskRequest:
+    properties:
+      completed:
+        example: false
+        type: boolean
+      description:
+        example: Go to the store and buy milk
+        type: string
+      header:
+        example: Buy milk
+        type: string
+    type: object
+  github_com_Tortik3000_todo-list_internal_api_handlers_task_model.TaskResponse:
+    properties:
+      completed:
+        example: false
+        type: boolean
+      description:
+        example: Go to the store and buy milk
+        type: string
+      header:
+        example: Buy milk
+        type: string
+      id:
+        example: 1
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for managing a todo list.
+  title: Todo List API
+  version: "1.0"
+paths:
+  /todos:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_Tortik3000_todo-list_internal_api_handlers_task_model.TaskResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get all tasks
+    post:
+      parameters:
+      - description: Task to create
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_Tortik3000_todo-list_internal_api_handlers_task_model.TaskRequest'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_Tortik3000_todo-list_internal_api_handlers_task_model.TaskResponse'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new task
+  /todos/{id}:
+    delete:
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: string
+        "400":
+          description: Invalid ID
+          schema:
+            type: string
+        "404":
+          description: Task not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete a task
+    get:
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_Tortik3000_todo-list_internal_api_handlers_task_model.TaskResponse'
+        "400":
+          description: Invalid ID
+          schema:
+            type: string
+        "404":
+          description: Task not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get a task by ID
+    put:
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated task details
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_Tortik3000_todo-list_internal_api_handlers_task_model.TaskRequest'
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: string
+        "400":
+          description: Invalid input or ID
+          schema:
+            type: string
+        "404":
+          description: Task not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Update an existing task
+swagger: "2.0"

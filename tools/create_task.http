@@ -1,0 +1,33 @@
+### success
+POST localhost:8080/todos
+Content-Type: application/json
+
+{
+  "header": "task",
+  "description": "description"
+}
+
+### success
+POST localhost:8080/todos
+Content-Type: application/json
+
+{
+  "header": "task"
+}
+
+### invalid header
+POST localhost:8080/todos
+Content-Type: application/json
+
+{
+  "description": "description"
+}
+
+### invalid header
+POST localhost:8080/todos
+Content-Type: application/json
+
+{
+  "header": "",
+  "description": "description"
+}

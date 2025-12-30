@@ -1,0 +1,19 @@
+### success
+PUT localhost:8080/todos/1
+Content-Type: application/json
+
+{
+  "header": "task-1",
+  "description": "description",
+  "completed": true
+}
+
+### invalid
+PUT localhost:8080/todos/tu
+Content-Type: application/json
+
+{
+  "header": "task-1",
+  "description": "description",
+  "completed": true
+}

@@ -1,0 +1,12 @@
+services:
+  todo-list:
+    build:
+      context: .
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      PORT: "${PORT}"
+
+networks:
+  internal:
+    driver: bridge

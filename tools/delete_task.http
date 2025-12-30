@@ -1,0 +1,8 @@
+### success
+DELETE localhost:8080/todos/1
+Content-Type: application/json
+
+### invalid
+DELETE localhost:8080/todos/r
+Content-Type: application/json
+
