@@ -1,16 +1,16 @@
 package config_test
 
 import (
+"github.com/Tortik3000/todo-list/pkg/tests"
 	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 
 	"github.com/Tortik3000/todo-list/config"
 )
 
 func TestNew(t *testing.T) {
-	tests := []struct {
+	tests_cases := []struct {
 		name     string
 		envValue string
 		setEnv   bool
@@ -36,7 +36,7 @@ func TestNew(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range tests_cases {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.setEnv {
 				t.Setenv("PORT", tt.envValue)
@@ -46,7 +46,7 @@ func TestNew(t *testing.T) {
 
 			cfg := config.New()
 
-			assert.Equal(t, tt.wantPort, cfg.Server.Port)
+			tests.AssertEqual(t, tt.wantPort, cfg.Server.Port)
 		})
 	}
 }

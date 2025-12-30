@@ -3,11 +3,10 @@ package model_test
 import (
 	"errors"
 	"fmt"
+	"github.com/Tortik3000/todo-list/pkg/tests"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/require"
 
 	handlerModel "github.com/Tortik3000/todo-list/internal/api/handlers/task/model"
 	modelErr "github.com/Tortik3000/todo-list/internal/model/error"
@@ -16,7 +15,7 @@ import (
 func TestToHttpErr(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name           string
 		inputErr       error
 		expectedStatus int
@@ -59,14 +58,14 @@ func TestToHttpErr(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
 			w := httptest.NewRecorder()
 			handlerModel.ToHttpErr(w, tt.inputErr)
 
-			require.Equal(t, tt.expectedStatus, w.Code)
+			tests.RequireEqual(t, tt.expectedStatus, w.Code)
 		})
 	}
 }

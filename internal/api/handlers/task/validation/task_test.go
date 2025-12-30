@@ -3,7 +3,7 @@ package validation_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/Tortik3000/todo-list/pkg/tests"
 
 	"github.com/Tortik3000/todo-list/internal/api/handlers/task/model"
 	"github.com/Tortik3000/todo-list/internal/api/handlers/task/validation"
@@ -12,7 +12,7 @@ import (
 func Test_ValidateTaskRequest(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name string
 		req  model.TaskRequest
 		err  error
@@ -35,15 +35,15 @@ func Test_ValidateTaskRequest(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
 			err := validation.ValidateTaskRequest(tt.req)
 			if tt.err != nil {
-				require.ErrorIs(t, err, tt.err)
+				tests.RequireErrorIs(t, err, tt.err)
 			} else {
-				require.NoError(t, err)
+				tests.RequireNoError(t, err)
 			}
 		})
 	}

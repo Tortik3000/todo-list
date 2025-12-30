@@ -1,9 +1,8 @@
 package model_test
 
 import (
+	"github.com/Tortik3000/todo-list/pkg/tests"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 
 	handlerModel "github.com/Tortik3000/todo-list/internal/api/handlers/task/model"
 	domainModel "github.com/Tortik3000/todo-list/internal/model"
@@ -12,7 +11,7 @@ import (
 func TestModelToResponse(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name  string
 		input domainModel.Task
 	}{
@@ -27,16 +26,16 @@ func TestModelToResponse(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
 			result := handlerModel.ModelToResponse(tt.input)
 
-			assert.Equal(t, tt.input.ID, result.ID)
-			assert.Equal(t, tt.input.Header, result.Header)
-			assert.Equal(t, tt.input.Description, result.Description)
-			assert.Equal(t, tt.input.Completed, result.Completed)
+			tests.AssertEqual(t, tt.input.ID, result.ID)
+			tests.AssertEqual(t, tt.input.Header, result.Header)
+			tests.AssertEqual(t, tt.input.Description, result.Description)
+			tests.AssertEqual(t, tt.input.Completed, result.Completed)
 		})
 	}
 }
@@ -44,7 +43,7 @@ func TestModelToResponse(t *testing.T) {
 func TestRequestToModel(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name  string
 		input handlerModel.TaskRequest
 	}{
@@ -58,16 +57,16 @@ func TestRequestToModel(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
 			result := handlerModel.RequestToModel(tt.input)
 
-			assert.Equal(t, tt.input.Header, result.Header)
-			assert.Equal(t, tt.input.Description, result.Description)
-			assert.Equal(t, tt.input.Completed, result.Completed)
-			assert.Equal(t, int64(0), result.ID)
+			tests.AssertEqual(t, tt.input.Header, result.Header)
+			tests.AssertEqual(t, tt.input.Description, result.Description)
+			tests.AssertEqual(t, tt.input.Completed, result.Completed)
+			tests.AssertEqual(t, int64(0), result.ID)
 		})
 	}
 }

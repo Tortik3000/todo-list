@@ -1,12 +1,10 @@
 package http_test
 
 import (
+	"github.com/Tortik3000/todo-list/pkg/tests"
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 
 	httpUtils "github.com/Tortik3000/todo-list/pkg/http"
 )
@@ -14,7 +12,7 @@ import (
 func TestParseID(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name      string
 		pathValue string
 		wantID    int64
@@ -40,7 +38,7 @@ func TestParseID(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -50,10 +48,10 @@ func TestParseID(t *testing.T) {
 			gotID, err := httpUtils.ParseID(req)
 
 			if tt.wantErr {
-				require.Error(t, err)
+				tests.RequireError(t, err)
 			} else {
-				require.NoError(t, err)
-				assert.Equal(t, tt.wantID, gotID)
+				tests.RequireNoError(t, err)
+				tests.AssertEqual(t, tt.wantID, gotID)
 			}
 		})
 	}
@@ -67,7 +65,7 @@ func TestWriteJSON(t *testing.T) {
 		Age  int    `json:"age"`
 	}
 
-	tests := []struct {
+	testsCases := []struct {
 		name       string
 		status     int
 		payload    any
@@ -97,7 +95,7 @@ func TestWriteJSON(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -105,8 +103,8 @@ func TestWriteJSON(t *testing.T) {
 
 			httpUtils.WriteJSON(w, tt.status, tt.payload)
 
-			assert.Equal(t, tt.wantStatus, w.Code)
-			assert.Equal(t, tt.wantBody, w.Body.String())
+			tests.AssertEqual(t, tt.wantStatus, w.Code)
+			tests.AssertEqual(t, tt.wantBody, w.Body.String())
 		})
 	}
 }

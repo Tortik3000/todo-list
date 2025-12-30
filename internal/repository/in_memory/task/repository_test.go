@@ -7,8 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/Tortik3000/todo-list/pkg/tests"
 
 	"github.com/Tortik3000/todo-list/internal/model"
 	modelErr "github.com/Tortik3000/todo-list/internal/model/error"
@@ -18,7 +17,7 @@ import (
 func TestRepository_CreateTask(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name  string
 		task0 model.Task
 		task1 model.Task
@@ -39,18 +38,18 @@ func TestRepository_CreateTask(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
 			repository := repo.New()
 
 			res, err := repository.CreateTask(t.Context(), tt.task0)
-			require.NoError(t, err)
+			tests.RequireNoError(t, err)
 			taskEqual(t, tt.task0, *res)
 
 			res, err = repository.CreateTask(t.Context(), tt.task1)
-			require.NoError(t, err)
+			tests.RequireNoError(t, err)
 			taskEqual(t, tt.task1, *res)
 		})
 	}
@@ -59,7 +58,7 @@ func TestRepository_CreateTask(t *testing.T) {
 func TestRepository_GetTaskByID(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name   string
 		taskID int64
 		err    error
@@ -76,7 +75,7 @@ func TestRepository_GetTaskByID(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -86,9 +85,9 @@ func TestRepository_GetTaskByID(t *testing.T) {
 			id := tt.taskID
 			res, err := repository.GetTaskByID(t.Context(), id)
 			if tt.err != nil {
-				require.ErrorIs(t, tt.err, err)
+				tests.RequireErrorIs(t, tt.err, err)
 			} else {
-				require.NoError(t, err)
+				tests.RequireNoError(t, err)
 				taskEqual(t, task, *res)
 			}
 		})
@@ -98,7 +97,7 @@ func TestRepository_GetTaskByID(t *testing.T) {
 func TestRepository_GetAllTasks(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name  string
 		tasks []model.Task
 	}{
@@ -112,7 +111,7 @@ func TestRepository_GetAllTasks(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -122,12 +121,12 @@ func TestRepository_GetAllTasks(t *testing.T) {
 			}
 
 			res, err := repository.GetAllTasks(t.Context())
-			require.NoError(t, err)
+			tests.RequireNoError(t, err)
 			sort.Slice(res, func(i, j int) bool {
 				return res[i].ID < res[j].ID
 			})
 
-			assert.Equal(t, tt.tasks, res)
+			tests.AssertEqual(t, tt.tasks, res)
 		})
 	}
 }
@@ -135,7 +134,7 @@ func TestRepository_GetAllTasks(t *testing.T) {
 func TestRepository_UpdateTask(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name   string
 		taskID int64
 		err    error
@@ -152,7 +151,7 @@ func TestRepository_UpdateTask(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -163,13 +162,13 @@ func TestRepository_UpdateTask(t *testing.T) {
 
 			err := repository.UpdateTask(t.Context(), newTask)
 			if tt.err != nil {
-				require.ErrorIs(t, tt.err, err)
+				tests.RequireErrorIs(t, tt.err, err)
 				return
 			}
-			require.NoError(t, err)
+			tests.RequireNoError(t, err)
 
 			getTask, err := repository.GetTaskByID(t.Context(), newTask.ID)
-			require.NoError(t, err)
+			tests.RequireNoError(t, err)
 			taskEqual(t, newTask, *getTask)
 		})
 	}
@@ -178,7 +177,7 @@ func TestRepository_UpdateTask(t *testing.T) {
 func TestRepository_DeleteTask(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
+	testsCases := []struct {
 		name   string
 		taskID int64
 		err    error
@@ -195,7 +194,7 @@ func TestRepository_DeleteTask(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testsCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -204,13 +203,13 @@ func TestRepository_DeleteTask(t *testing.T) {
 
 			err := repository.DeleteTask(t.Context(), tt.taskID)
 			if tt.err != nil {
-				require.ErrorIs(t, tt.err, err)
+				tests.RequireErrorIs(t, tt.err, err)
 				return
 			}
-			require.NoError(t, err)
+			tests.RequireNoError(t, err)
 
 			_, err = repository.GetTaskByID(t.Context(), tt.taskID)
-			require.ErrorIs(t, err, modelErr.ErrTaskNotFound)
+			tests.RequireErrorIs(t, err, modelErr.ErrTaskNotFound)
 		})
 	}
 }
@@ -218,16 +217,16 @@ func TestRepository_DeleteTask(t *testing.T) {
 func taskEqual(t *testing.T, expected, actual model.Task) {
 	t.Helper()
 
-	assert.Equal(t, expected.Header, actual.Header)
-	assert.Equal(t, expected.Description, actual.Description)
-	assert.Equal(t, expected.Completed, actual.Completed)
+	tests.AssertEqual(t, expected.Header, actual.Header)
+	tests.AssertEqual(t, expected.Description, actual.Description)
+	tests.AssertEqual(t, expected.Completed, actual.Completed)
 }
 
 func setupTask(t *testing.T, repository repo.Repository, inTask model.Task) model.Task {
 	t.Helper()
 
 	task, err := repository.CreateTask(t.Context(), inTask)
-	require.NoError(t, err)
+	tests.RequireNoError(t, err)
 
 	return *task
 }
