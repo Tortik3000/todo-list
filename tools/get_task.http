@@ -1,8 +1,12 @@
+@host = http://localhost
+@port = 8080
+@baseURL = {{host}}:{{port}}
+
 ### success
-GET localhost:8080/todos/1
+GET {{baseURL}}/todos/1
 Content-Type: application/json
 
 ### invalid
-GET localhost:8080/todos/r
+GET {{baseURL}}/todos/r
 Content-Type: application/json
 

@@ -1,5 +1,9 @@
+@host = http://localhost
+@port = 8080
+@baseURL = {{host}}:{{port}}
+
 ### success
-PUT localhost:8080/todos/1
+PUT {{baseURL}}/todos/1
 Content-Type: application/json
 
 {
@@ -9,7 +13,7 @@ Content-Type: application/json
 }
 
 ### invalid
-PUT localhost:8080/todos/tu
+PUT {{baseURL}}/todos/tu
 Content-Type: application/json
 
 {

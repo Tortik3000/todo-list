@@ -1,8 +1,12 @@
+@host = http://localhost
+@port = 8080
+@baseURL = {{host}}:{{port}}
+
 ### success
-DELETE localhost:8080/todos/1
+DELETE {{baseURL}}/todos/1
 Content-Type: application/json
 
 ### invalid
-DELETE localhost:8080/todos/r
+DELETE {{baseURL}}/todos/r
 Content-Type: application/json
 

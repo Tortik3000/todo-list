@@ -3,7 +3,7 @@ services:
     build:
       context: .
     ports:
-      - "${PORT}:${PORT}"
+      - "${LOCAL_PORT}:${PORT}"
     environment:
       PORT: "${PORT}"
 

@@ -1,2 +1,6 @@
-GET localhost:8080/todos
+@host = http://localhost
+@port = 8080
+@baseURL = {{host}}:{{port}}
+
+GET {{baseURL}}/todos
 Content-Type: application/json
